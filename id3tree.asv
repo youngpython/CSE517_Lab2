@@ -42,9 +42,7 @@ elseif size(unique(xTr),2) == 1
     T = str2double(strcol(2:end-1))';
 else
     S = zeros(6,2^(length(xTr)+1)-1);
-    SL = id3tree(xTr,yTr,maxdepth,weights);
-    %I'm a litte confused on how this is supposed to play out, in terms
-    %of the recursive splitting
+    SL = id3tree(xTr,yTr,
 end
 
  
