@@ -49,7 +49,8 @@ else
     SR_weights = weights(:,right_idx);
     T = [id3tree(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos+1) [mode(yTr);feature;cut;2*current_pos+1;2*current_pos+2;current_pos] id3tree(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+2)];   
 end
-
+T
+T = sortrows(T',6)';
 %{
 current_pos = 1;
 [feature,cut,Hbest] = entropysplit(xTr,yTr,weights);
@@ -70,7 +71,6 @@ for i=1:maxdepth
    current_pos = current_pos*2;
 %}
 end
-sort(
 
 
 

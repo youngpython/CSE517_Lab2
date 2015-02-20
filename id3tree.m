@@ -27,15 +27,15 @@ if nargin<3
    maxdepth = ceil(log2(n)); %FIXME Unsure about this
 end
 if nargin<5
-    current_pos = 0;
+    current_pos = 1;
     disp('T refreshed');
 end
 
 if length(unique(yTr','rows')) == 1  || maxdepth == 0 %If all the y's are the same, or max depth reached
-    T = [yTr(1);0;0;0;0;current_pos];
+    T = [yTr(1);0;0;0;0;floor(current_pos/2)];
     
 elseif length(unique(xTr','rows')) == 1 || maxdepth == 0 %If all columns in xTr are the same, or max depth reached
-    T = [mode(yTr);0;0;0;0;current_pos];
+    T = [mode(yTr);0;0;0;0;floor(current_pos/2)];
 else
     [feature,cut,~] = entropysplit(xTr,yTr,weights);
     left_idx = xTr(feature,:)<=cut;
@@ -47,9 +47,8 @@ else
     SR_x = xTr(:,right_idx);
     SR_y = yTr(:,right_idx);
     SR_weights = weights(:,right_idx);
-    T = [id3tree(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos+1) [mode(yTr);feature;cut;2*current_pos+1;2*current_pos+2;current_pos] id3tree(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+2)];   
+    T = [id3tree(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos) [mode(yTr);feature;cut;2*current_pos;2*current_pos+1;floor(current_pos/2)] id3tree(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1)];   
 end
-
 T = sortrows(T',6)';
 %{
 current_pos = 1;
