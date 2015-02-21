@@ -31,11 +31,8 @@ alloc = id3treehelper(xTr,yTr,maxdepth,weights,1);
 
 alloc = sortrows(alloc',7)';
 replace_indices = alloc(7,:);
-disp(T)
-disp(alloc);
 T(:,replace_indices) = alloc;
 T = T(1:6,:);
-disp(T);
 end
 
 function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos)
