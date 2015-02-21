@@ -23,37 +23,7 @@ def p(m,k,n): #Calculate probability of an individual ratio of unique pairs
     else:
         raise TypeError("m,k and n must be ints")
        
-'''
-def p(m,k,n):
-    if isinstance(m,int) and isinstance(k,int) and isinstance(n,int):    
-        pvalues = [[0 for x in range(m+1)] for x in range(k+1)]        
-        for i in range(m):
-            pvalues[i][1] = 0
-        print(k)
-        for j in range(k):
-            print(j)
-            pvalues[1][j] = 1/(n**j)
-        pvalues[1][1] = 1
-        for i in range(2,m+1):
-            for j in range(2,k+1):
-                pvalues[i][j] = (i/n)*pvalues[i,j-1,n] + \
-                    ((n-i)/n)*pvalues[i-1,j-1,n]
-        return pvalues[m][k]
-    else:
-        raise TypeError("m,k and n must be ints")
-'''
-'''
-def p(m,k,n):
-    pvalues = np.zeros((m+1,k+1))
-    pvalues[:,1] = 0
-    pvalues[1,:] = 1/(n^range(k))
-    pvalues[1,1] = 1
-    if m>1 and k>1:
-       for i in range(2,m+1):
-           for j in range(2,k+1):
-               pvalues[i,j] = (i/n)*pvalues[i,j-1] + ((n-i)/n)*pvalues[i-1,j-1]
-    return pvalues[m,k]
-'''
+
 def expected(n):
     if isinstance(n,int):    
         if n > 0:
@@ -66,5 +36,5 @@ def expected(n):
     else:
         raise TypeError("m,k and n must be ints")
         
-for i in range(2,5):
+for i in range(2,10):
     print(expected(10**i))

@@ -14,9 +14,9 @@ for i = 1:nt
    training_vectors = randsample(n,n,true);
    xTr = zeros(d,n);
    yTr = zeros(1,n);
-   for j = 1:n
+   for j = 1:length(training_vectors)
        xTr(:,j) = x(:,training_vectors(j));
-       yTr(:,j) = y(:,training_vectors(j));
+       yTr(:,j) = training_vectors(j);
    end
    trees{i} = prunetree(id3tree(xTr,yTr,ceil(log2(n)),ones(1,n)./n,true),x,y); %FIXME Weights?
 end
