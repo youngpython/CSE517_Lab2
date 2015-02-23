@@ -12,6 +12,6 @@ function preds=evalboost(BDT,xTe)
 % preds | predictions of labels for xTe
 %
 
-%% fill in code here
+preds = evaltree(BDT,xTe);
 
 
