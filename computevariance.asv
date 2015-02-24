@@ -18,9 +18,7 @@ global Nsmall NMODELS OFFSET;
 [~,n]=size(xTe);
 variance=zeros(1,n);
 for j=1:NMODELS
-    [xTr,yTr] = toydata(OFFSET,Nsmall);
-    h_d = evaltree(id3tree(xTr,yTr,treedepth),xTe);
-    variance = variance + (h_d - hbar).^2;
+    variance = variance + 
 end;
 variance=mean(variance)/NMODELS;
 
