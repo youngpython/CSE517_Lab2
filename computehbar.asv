@@ -18,7 +18,7 @@ global Nsmall NMODELS OFFSET;
 hbar=zeros(1,n);
 for j=1:NMODELS
     [xTr,yTr] = toydata(OFFSET,Nsmall);
-    hbar = hbar + evaltree(id3tree(xTr,yTr,treedepth),xTe);
+    hbar = hbar + evaltree(id3tree(xTr,yT,treedepth))
 end;
 hbar=hbar./NMODELS;
 

@@ -27,7 +27,7 @@ if nargin<4
     weights=ones(1,n)./n;
 end
 if nargin<3
-   maxdepth = ceil(log2(n)); %FIXME Unsure about this
+   maxdepth = ceil(log2(n)); %FIXME Should actually be n, but can we get a better estimate on number of nodes?
 end
 T = zeros(7,n);
 avail_features = 1:d;
