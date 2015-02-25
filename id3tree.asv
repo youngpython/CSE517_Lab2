@@ -66,9 +66,8 @@ function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail
             SR_x = xTr(:,right_idx);
             SR_y = yTr(:,right_idx);
             SR_weights = weights(:,right_idx);
-            %[~,~,C] = mode(yTr);
-            %disp(length(find(cellfun(@(x)(length(x)>1),C)))); %FIXME Mode
-            %tiebreaking?
+            [~,~,C] = mode(yTr);
+            disp(length(C)==);
             alloc = [ id3treehelper(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos,isforest,avail_features,d),... 
                 [mode(yTr);feature;cut;2*current_pos;2*current_pos+1;floor(current_pos/2);current_pos],... 
                 id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d)];   

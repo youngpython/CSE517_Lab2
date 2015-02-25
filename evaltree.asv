@@ -17,7 +17,7 @@ for xCol = 1:y
     while (~(T(4,current_pos)==0 && T(5,current_pos)==0))  
         feature = T(2,current_pos);
         cutoff = T(3,current_pos);
-        if xVec(feature) <= cutoff
+        if xVec(feature) <= cutoff && 
             %goes to left child of current node
             current_pos = current_pos*2;
         else
