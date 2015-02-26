@@ -20,13 +20,14 @@ if ~exist('maxdepth', 'var')==1 || isempty(maxdepth)
    maxdepth = 3; 
 end
 [~,n] = size(x);
-BDT = zeros(6,n);
 weights = ones(1,n)./n;
 for m = 1:nt
    T = id3tree(x,y,maxdepth,weights); %FIXME Prune?
    h_x = evaltree(T,x);
    indicator = y ~= h_x; %FIXME Are the right ones 0 or -1
    err = sum(indicator.*weights);
+   %ERR = indicator.*weights
+   ERR_SUM = err
    if err > .5
        break;
    end
@@ -44,8 +45,9 @@ for m = 1:nt
    y_dummy(y_dummy == neg) = -1;
    y_dummy(y_dummy == pos) = 1;
    for i = 1:n
-      weights(i) = weights(i)*exp(-1*alpha*h_x(i)*y_dummy(i)); 
+      weights(i) = (weights(i)*exp(-1*alpha*h_x(i)*y_dummy(i)));
    end
-   weights = weights/norm(weights);
+   %weights = normr(weights);
+   weights = weights./(2*sqrt(err*(1-err)));
 end
 BDT = id3tree(x,y,maxdepth,weights,false,true);

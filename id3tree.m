@@ -78,10 +78,21 @@ function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail
             predicted_label = mode(yTr);
             if isboost == true
                classes = unique(yTr);
-               weighted_modes = arrayfun(@(x)(sum(weights(yTr(yTr==x)))),classes);
+               %WEIGHTS = weights
+               %LABELS = yTr
+               %INDICES_1 = find(yTr==1)
+               %INDICES_2 = find(yTr==2)
+               weighted_modes = arrayfun(@(x)(sum(weights(find(yTr==x)))),classes);
+               %WEIGHTED_MODES = weighted_modes
                [~,I] = max(weighted_modes(:));
-               predicted_label = classes(I);            
+               predicted_label = classes(I);
+               %PREDICTED_LABEL = predicted_label
+               %MODE = mode(yTr)
             end
+            %if mode(yTr) ~= predicted_label
+            %    MODE = mode(yTr)
+            %    DIFFERENT_PREDICTED_LABEL = predicted_label
+            %end
             alloc = [ id3treehelper(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos,isforest,avail_features,d,isboost),... 
                 [predicted_label;feature;cut;2*current_pos;2*current_pos+1;floor(current_pos/2);current_pos],... 
                 id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d,isboost)]; 
