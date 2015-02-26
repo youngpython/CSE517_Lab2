@@ -48,4 +48,4 @@ for m = 1:nt
    end
    weights = weights/norm(weights);
 end
-BDT = id3tree(x,y,maxdepth,weights,false,true);
+BDT = id3tree(x,y,maxdepth,weights);
