@@ -18,6 +18,6 @@ for i = 1:nt
        xTr(:,j) = x(:,training_vectors(j));
        yTr(:,j) = y(:,training_vectors(j));
    end
-   trees{i} = prunetree(id3tree(xTr,yTr,ceil(log2(n)),ones(1,n)./n,true),x,y); %FIXME Weights?
+   trees{i} = prunetree(id3tree(xTr,yTr,3,ones(1,n)./n,true),x,y); %FIXME Weights?
 end
 F = trees;

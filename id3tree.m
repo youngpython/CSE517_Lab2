@@ -48,30 +48,36 @@ function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail
     else
         if isforest == true
             feature_indices = randsample(avail_features,ceil(d*(4/7)));
-            x = xTr(feature_indices,:);
+            x = xTr(feature_indices,:); %FIXME Change back to x
             [feature,cut,~] = entropysplit(x,yTr,weights);
-            
+            %FIXME Originally picked a "feature" index that did not
+            %correspond with the collapsed matrix
         else
             [feature,cut,~] = entropysplit(xTr,yTr,weights);  
         end
-        if feature==0
+        if feature==0 %FIXME Delete
             alloc = [mode(yTr);0;0;0;0;floor(current_pos/2);current_pos]; %FIXME If we have this, do we need the others?
         else
+            %TR_SIZE = size(xTr)
+            %xTr(feature,:)
+            %feature
+            %cut
             left_idx = xTr(feature,:)<=cut;
             SL_x = xTr(:,left_idx);
             SL_y = yTr(:,left_idx);
             SL_weights = weights(:,left_idx);
-
+            %SIZE_LX = size(SL_x)
             right_idx = xTr(feature,:)>cut;
             SR_x = xTr(:,right_idx);
             SR_y = yTr(:,right_idx);
             SR_weights = weights(:,right_idx);
+            %SIZE_RX = size(SR_x)
             %[~,~,C] = mode(yTr);
             %disp(length(find(cellfun(@(x)(length(x)>1),C)))); %FIXME Mode
-            %tiebreaking?
             alloc = [ id3treehelper(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos,isforest,avail_features,d),... 
                 [mode(yTr);feature;cut;2*current_pos;2*current_pos+1;floor(current_pos/2);current_pos],... 
-                id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d)];   
+                id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d)];  
+            %disp(alloc);
         end
         
     end
