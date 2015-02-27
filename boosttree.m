@@ -13,6 +13,7 @@ function BDT=boosttree(x,y,nt,maxdepth)
 % OUTPUT:
 % BDT | Boosted DTree
 %
+boosted_trees = cell(1,nt);
 if ~exist('nt', 'var')==1 || isempty(nt)
    nt = 100; 
 end
@@ -21,16 +22,23 @@ if ~exist('maxdepth', 'var')==1 || isempty(maxdepth)
 end
 [~,n] = size(x);
 weights = ones(1,n)./n;
+prevweights = weights;
 for m = 1:nt
-   T = id3tree(x,y,maxdepth,weights); %FIXME Prune?
-   h_x = evaltree(T,x);
+   boosted_trees{m}.alpha = weights;
+   %disp(boosted_trees{m});
+   %disp(boosted_trees{m}.alpha);
+   boosted_trees{m}.tree = id3tree(x,y,maxdepth,weights,false,true);%FIXME Prune?
+   %disp(boosted_trees{m}.tree);
+   h_x = evaltree(boosted_trees{m}.tree,x);
    indicator = y ~= h_x; %FIXME Are the right ones 0 or -1
    err = sum(indicator.*weights);
    %ERR = indicator.*weights
-   ERR_SUM = err
+   %ERR_SUM = err
    if err > .5
+      % disp(m)
        break;
    end
+   stopping_point = m;
    alpha = (1/2)*log((1-err)/err);
    %BDT = BDT + alpha*T; %FIXME In the pseudocode, but Dr. Weinberger says
    %we don't have to
@@ -44,10 +52,30 @@ for m = 1:nt
    y_dummy = y; 
    y_dummy(y_dummy == neg) = -1;
    y_dummy(y_dummy == pos) = 1;
+   %prevweights = weights;
    for i = 1:n
       weights(i) = (weights(i)*exp(-1*alpha*h_x(i)*y_dummy(i)));
    end
-   %weights = normr(weights);
-   weights = weights./(2*sqrt(err*(1-err)));
+   %weights = weights./norm(weights);
+   weights = weights./sum(weights);
+   %weights = weights./(2*sqrt(err*(1-err)));
+   %disp(weights)
+   %disp('sum of weights inside loop')
+   %disp(sum(weights))
+   %(2*sqrt(err*(1-err)));
 end
-BDT = id3tree(x,y,maxdepth,weights,false,true);
+%weights = weights./norm(weights);
+%disp('got here')
+%disp(prevweights)
+%weights = weights./sum(weights);
+%disp(sum(prevweights))
+%BDT = boosted_trees;
+BDT = cell(1,stopping_point);
+for i=1:stopping_point
+    BDT{i} = boosted_trees{i}.tree;
+end
+
+%BDT=boosted_trees(1:stopping_point).tree;
+%disp(BDT);
+
+%BDT = id3tree(x,y,maxdepth,prevweights,false,true);

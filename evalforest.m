@@ -23,5 +23,5 @@ end
 
 predictions = zeros(1,m);
 for i = 1:m
-    predictions(i) = mode(preds(:,i));
+    predictions(i) = mode((preds(:,i)));
 end
