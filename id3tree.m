@@ -1,4 +1,4 @@
-function T=id3tree(xTr,yTr,maxdepth,weights,isforest,isboost)
+function T=id3tree(xTr,yTr,maxdepth,weights,isforest,use_weighted_modes)
 % function T=id3tree(xTr,yTr,maxdepth,weights)
 %
 % The maximum tree depth is defined by "maxdepth" (maxdepth=2 means one split). 
@@ -21,7 +21,7 @@ function T=id3tree(xTr,yTr,maxdepth,weights,isforest,isboost)
 
 [d,n]=size(xTr);
 if nargin<6
-   isboost = false;
+   use_weighted_modes = false;
 end
 if nargin<5
    isforest = false;
@@ -34,7 +34,7 @@ if nargin<3
 end
 T = zeros(7,n);
 avail_features = 1:d;
-alloc = id3treehelper(xTr,yTr,maxdepth,weights,1,isforest,avail_features,d,isboost);
+alloc = id3treehelper(xTr,yTr,maxdepth,weights,1,isforest,avail_features,d,use_weighted_modes);
 
 alloc = sortrows(alloc',7)';
 replace_indices = alloc(7,:);
@@ -42,7 +42,7 @@ T(:,replace_indices) = alloc;
 T = T(1:6,:);
 end
 
-function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail_features,d,isboost)
+function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail_features,d,use_weighted_modes)
     if length(unique(yTr','rows')) == 1  || maxdepth == 0 %If all the y's are the same, or max depth reached
         alloc = [mode(yTr);0;0;0;0;floor(current_pos/2);current_pos];
     %If all columns in xTr are the same, or max depth reached
@@ -76,7 +76,7 @@ function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail
             SR_y = yTr(:,right_idx);
             SR_weights = weights(:,right_idx);
             predicted_label = mode(yTr);
-            if isboost == true
+            if use_weighted_modes == true
                classes = unique(yTr);
                %WEIGHTS = weights
                %LABELS = yTr
@@ -93,9 +93,9 @@ function alloc=id3treehelper(xTr,yTr,maxdepth,weights,current_pos,isforest,avail
             %    MODE = mode(yTr)
             %    DIFFERENT_PREDICTED_LABEL = predicted_label
             %end
-            alloc = [ id3treehelper(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos,isforest,avail_features,d,isboost),... 
+            alloc = [ id3treehelper(SL_x,SL_y,maxdepth-1,SL_weights,2*current_pos,isforest,avail_features,d,use_weighted_modes),... 
                 [predicted_label;feature;cut;2*current_pos;2*current_pos+1;floor(current_pos/2);current_pos],... 
-                id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d,isboost)]; 
+                id3treehelper(SR_x,SR_y,maxdepth-1,SR_weights,2*current_pos+1,isforest,avail_features,d,use_weighted_modes)]; 
         end
     end
     

@@ -16,12 +16,8 @@ function preds=evalboost(BDT,xTe)
 preds = zeros(n,m);
 
 for i = 1:n
-   % disp(BDT{i});
    preds(i,:) = evaltree(BDT{i},xTe); 
 end
-%FIXME Use mean
-%predictions = round((1/n)*sum(preds,1));
-%FIXME Use mode
 
 predictions = zeros(1,m);
 for i = 1:m

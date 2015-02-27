@@ -22,28 +22,24 @@ if ~exist('maxdepth', 'var')==1 || isempty(maxdepth)
 end
 [~,n] = size(x);
 weights = ones(1,n)./n;
-prevweights = weights;
 for m = 1:nt
    boosted_trees{m}.alpha = weights;
-   %disp(boosted_trees{m});
-   %disp(boosted_trees{m}.alpha);
-   boosted_trees{m}.tree = id3tree(x,y,maxdepth,weights,false,true);%FIXME Prune?
-   %disp(boosted_trees{m}.tree);
+   %create a tree using the up-to-date weights
+   boosted_trees{m}.tree = id3tree(x,y,maxdepth,boosted_trees{m}.alpha,false,true);
    h_x = evaltree(boosted_trees{m}.tree,x);
-   indicator = y ~= h_x; %FIXME Are the right ones 0 or -1
+   %find the labels the tree got right, mark the wrongly labeled vectors
+   %with a 1
+   indicator = y ~= h_x; 
+   %weighted error is the sum of all weights of the incorrectly predicted
+   %vectors
    err = sum(indicator.*weights);
-   %ERR = indicator.*weights
-   %ERR_SUM = err
    if err > .5
-      % disp(m)
        break;
    end
    stopping_point = m;
    alpha = (1/2)*log((1-err)/err);
-   %BDT = BDT + alpha*T; %FIXME In the pseudocode, but Dr. Weinberger says
-   %we don't have to
    
-   %Convert predictions and y vectors to 1's and -1's (rather than 1's
+   %convert predictions and y vectors to 1's and -1's (rather than 1's
    %and 2's or whatever they may be)
    pos = max(y);
    neg = min(y);
@@ -52,30 +48,16 @@ for m = 1:nt
    y_dummy = y; 
    y_dummy(y_dummy == neg) = -1;
    y_dummy(y_dummy == pos) = 1;
-   %prevweights = weights;
    for i = 1:n
       weights(i) = (weights(i)*exp(-1*alpha*h_x(i)*y_dummy(i)));
    end
-   %weights = weights./norm(weights);
+   %normalize weights
    weights = weights./sum(weights);
-   %weights = weights./(2*sqrt(err*(1-err)));
-   %disp(weights)
-   %disp('sum of weights inside loop')
-   %disp(sum(weights))
-   %(2*sqrt(err*(1-err)));
 end
-%weights = weights./norm(weights);
-%disp('got here')
-%disp(prevweights)
-%weights = weights./sum(weights);
-%disp(sum(prevweights))
-%BDT = boosted_trees;
+
+%create the final BDT, which will have each of the boosted_tree
+%entries in it
 BDT = cell(1,stopping_point);
 for i=1:stopping_point
     BDT{i} = boosted_trees{i}.tree;
 end
-
-%BDT=boosted_trees(1:stopping_point).tree;
-%disp(BDT);
-
-%BDT = id3tree(x,y,maxdepth,prevweights,false,true);

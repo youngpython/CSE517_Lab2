@@ -22,6 +22,7 @@ for i = 1:nt
        xTr(:,j) = x(:,training_vectors(j));
        yTr(:,j) = y(:,training_vectors(j));
    end
-   trees{i} = prunetree(id3tree(xTr,yTr,maxdepth,weights,false,true),x,y); %FIXME Weights?
+   %use the weighted mode for making the predicted labels at each node!
+   trees{i} = prunetree(id3tree(xTr,yTr,maxdepth,weights,false,true),x,y); 
 end
 F = trees;
